@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { pool, query } from './db.js';
-import { comparePassword, hashPassword, publicUser, requireAdmin, requireAuth, signToken } from './auth.js';
+import { comparePassword, hashPassword, isAuthConfigured, publicUser, requireAdmin, requireAuth, signToken } from './auth.js';
 import { ensureCatalog } from './catalog.js';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
@@ -41,10 +41,12 @@ const orderRow = row => ({ ...row, subtotal: row.subtotal_cents / 100, items: ro
 
 app.get('/health', async (_req, res) => {
   await query('SELECT 1');
-  res.json({ ok: true });
+  const authConfigured = isAuthConfigured();
+  res.status(authConfigured ? 200 : 503).json({ ok: authConfigured, database: true, authConfigured });
 });
 
 app.post('/api/auth/register', async (req, res) => {
+  if (!isAuthConfigured()) return fail(res, 503, 'Account service is not configured. Please contact store support.');
   const { name, email, phone, username, password } = req.body;
   if (!isText(name, 120) || !isText(username, 64) || !isText(password, 128) || (!isText(email, 254) && !isText(phone, 32))) return fail(res, 400, 'Name, username, password, and email or phone are required');
   if (password.length < 8) return fail(res, 400, 'Password must be at least 8 characters');
@@ -60,6 +62,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
+  if (!isAuthConfigured()) return fail(res, 503, 'Account service is not configured. Please contact store support.');
   const { identifier, password } = req.body;
   if (!isText(identifier, 254) || !isText(password, 128)) return fail(res, 400, 'Identifier and password are required');
   try {

@@ -24,6 +24,7 @@ Pass access tokens as `Authorization: Bearer <token>`. List endpoints use `page`
 
 - Use a managed PostgreSQL service with backups, point-in-time recovery, and encrypted connections.
 - Keep `DATABASE_URL` and `JWT_SECRET` in the deployment secret manager, never in the browser or repository.
+- Set `JWT_SECRET` to a unique value of at least 32 characters in Render before enabling customer accounts. `/health` reports `authConfigured: false` when this setting is missing or too short.
 - Promote the first administrator directly in PostgreSQL: `UPDATE users SET role='admin' WHERE email='owner@example.com';`.
 - Deploy the API together with the storefront when possible; the pages call `/api` on their own origin by default.
 - If the storefront and API use different HTTPS origins, set `CORS_ORIGIN` to the exact storefront origin and set `window.STORE_API_URL` to the API origin before the page scripts run.

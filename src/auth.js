@@ -2,8 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query } from './db.js';
 
+export const isAuthConfigured = () => typeof process.env.JWT_SECRET === 'string' && process.env.JWT_SECRET.trim().length >= 32;
 const secret = () => {
-  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) throw new Error('JWT_SECRET must be at least 32 characters');
+  if (!isAuthConfigured()) throw new Error('JWT_SECRET must be at least 32 characters');
   return process.env.JWT_SECRET;
 };
 export const publicUser = user => ({ id: user.id, name: user.name, email: user.email, phone: user.phone, username: user.username, role: user.role, createdAt: user.created_at });
