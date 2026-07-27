@@ -37,7 +37,9 @@ const page = value => Math.max(1, Number.parseInt(value, 10) || 1);
 const limit = value => Math.min(100, Math.max(1, Number.parseInt(value, 10) || 20));
 const fail = (res, status, error) => res.status(status).json({ error });
 const isText = (value, max = 5000) => typeof value === 'string' && value.trim().length > 0 && value.trim().length <= max;
-const isProductMediaUrl = value => isText(value, 700_000) && (/^https:\/\//i.test(value) || /^data:image\/(?:png|jpe?g|webp|gif);base64,/i.test(value));
+// Accept browser-readable raster/vector formats (PNG, JPEG, WebP, GIF, AVIF,
+// BMP, SVG, etc.) while still rejecting non-image data URLs.
+const isProductMediaUrl = value => isText(value, 700_000) && (/^https:\/\//i.test(value) || /^data:image\/[^;,]+;base64,/i.test(value));
 const orderRow = row => ({ ...row, subtotal: row.subtotal_cents / 100, items: row.items || [] });
 
 app.get('/health', async (_req, res) => {
