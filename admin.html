@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dane's Store — Admin</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet"><style>
+:root{--ink:#18201d;--cream:#f7f5ef;--line:#dedfd8;--lime:#c7f65a;--orange:#ff6b42;--muted:#737873}*{box-sizing:border-box}body{margin:0;background:var(--cream);font:14px 'DM Sans';color:var(--ink)}.login{min-height:100vh;display:grid;place-items:center;padding:24px}.loginbox{width:min(410px,100%);padding:36px;background:#fff;border:1px solid var(--line);border-radius:10px}.brand{font:700 28px 'Playfair Display'}.brand span{color:var(--orange)}h1,h2{font-family:'Playfair Display';letter-spacing:-1px}h1{font-size:35px;margin:30px 0 6px}h2{font-size:25px;margin:0 0 5px}p{color:var(--muted);line-height:1.5}label{display:block;font-size:12px;font-weight:bold;margin:16px 0 6px}input,textarea,select{width:100%;padding:11px;border:1px solid #d2d5ce;border-radius:4px;font:14px 'DM Sans';background:#fff}textarea{min-height:85px;resize:vertical}.button{border:0;background:var(--ink);color:#fff;padding:12px 16px;border-radius:4px;font-weight:bold;cursor:pointer}.button:hover{background:#344037}.button.alt{background:white;color:var(--ink);border:1px solid var(--line)}.full{width:100%;margin-top:22px}.admin{display:none;min-height:100vh}.top{height:70px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 30px}.top small{color:#b8c4b4}.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px)}aside{padding:24px 16px;border-right:1px solid var(--line);background:#f0eee7}aside button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:12px 14px;border-radius:4px;cursor:pointer;font:14px 'DM Sans';margin-bottom:3px}aside button.active,aside button:hover{background:#dce6ce;font-weight:bold}.content{padding:34px;max-width:1200px}.view{display:none}.view.active{display:block}.titlebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.metric{background:#fff;border:1px solid var(--line);padding:18px;border-radius:6px}.metric b{font:700 27px 'Playfair Display';display:block}.metric span{font-size:12px;color:var(--muted)}.panel{background:#fff;border:1px solid var(--line);border-radius:6px;padding:22px;margin-top:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.span2{grid-column:1/-1}.table{width:100%;border-collapse:collapse}.table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 8px;border-bottom:1px solid var(--line)}.table td{padding:12px 8px;border-bottom:1px solid #ecece6;vertical-align:top}.thumb{width:45px;height:45px;border-radius:4px;object-fit:cover;vertical-align:middle;margin-right:8px}.tag{display:inline-block;background:#e2efd0;padding:4px 7px;border-radius:20px;font:11px 'DM Mono'}.del{color:#c74d30;border:0;background:none;cursor:pointer;font-size:12px}.chat-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}.thread{border:1px solid var(--line);border-radius:5px;height:420px;overflow:auto;padding:13px;background:#fafaf8}.msg{padding:9px 11px;border-radius:8px;background:#e7eee1;margin:7px 0;max-width:85%;line-height:1.4}.msg.admin{background:var(--lime);margin-left:auto}.msg small{display:block;color:#677067;font-size:10px;margin-top:3px}.reply{display:flex;gap:8px;margin-top:10px}.reply input{flex:1}.notice{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 17px;border-radius:4px}.notice.show{display:block}.admin-confirm{display:none;position:fixed;inset:0;z-index:20;padding:20px;background:#18201d88;align-items:center;justify-content:center}.admin-confirm.open{display:flex}.admin-confirm-card{width:min(390px,100%);padding:30px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 18px 60px #0004}.admin-confirm-icon{width:42px;height:42px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:#fff0eb;color:var(--orange);font-weight:700;font-size:21px}.admin-confirm-card h2{margin-bottom:8px}.admin-confirm-card p{margin:0}.admin-confirm-actions{display:flex;gap:10px;margin-top:24px}.admin-confirm-actions .button{flex:1}.admin-confirm-actions .remove{background:var(--orange)}@media(max-width:750px){.layout{grid-template-columns:1fr}.top{padding:0 18px}aside{display:flex;overflow:auto;padding:10px;border-right:0;border-bottom:1px solid var(--line)}aside button{white-space:nowrap;width:auto}.content{padding:22px}.metrics{grid-template-columns:1fr 1fr}.grid,.chat-grid{grid-template-columns:1fr}.span2{grid-column:auto}.table{font-size:12px}}
+@media(max-width:480px){.login{padding:16px}.loginbox{padding:27px 21px}.content{padding:18px 12px}.top{height:auto;min-height:64px;padding:12px 14px;gap:10px;align-items:center}.brand{font-size:22px}.top a{margin-right:8px!important;font-size:12px!important}.top .button{padding:9px 10px}.metrics{grid-template-columns:1fr 1fr;gap:9px}.metric{padding:13px}.metric b{font-size:23px}.panel{padding:15px;overflow-x:auto}.table{min-width:550px}.thread{height:300px}.reply input,input,textarea,select{font-size:16px}.button{min-height:44px}.chat-grid .panel{overflow:visible}.chat-grid{gap:12px}}
+</style></head><body>
+<section class="login" id="login"><div class="loginbox"><div class="brand">Dane's <span>Store.</span></div><h1>Store manager</h1><p>Sign in to your private control panel.</p><label>Seller passcode</label><input id="code" type="password" placeholder="Enter passcode" onkeydown="if(event.key==='Enter')unlock()"><button class="button full" onclick="unlock()">Sign in to dashboard</button><p style="font-size:11px;margin-top:20px">Demo passcode: <b>danes2026</b></p><a href="index.html" style="font-size:12px;color:var(--ink)">← Back to storefront</a></div></section>
+<section class="admin" id="admin"><header class="top"><div class="brand">Dane's <span>Store.</span> <small>ADMIN</small></div><div><a href="index.html" style="color:#fff;margin-right:18px;font-size:13px">View store ↗</a><button class="button alt" onclick="logout()">Sign out</button></div></header><div class="layout"><aside><button class="active" onclick="showView('overview',this)">Overview</button><button onclick="showView('products',this)">Products</button><button onclick="showView('orders',this)">Orders</button><button onclick="showView('messages',this)">Customer chat</button><button onclick="showView('customers',this)">Customers</button></aside><main class="content">
+<section class="view active" id="overview"><div class="titlebar"><div><h2>Good morning, Dane.</h2><p>Here’s what is happening in your store.</p></div></div><div class="metrics" id="metrics"></div><div class="panel"><h2>Recent orders</h2><table class="table"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Address</th></tr></thead><tbody id="recentOrders"></tbody></table></div></section>
+<section class="view" id="products"><div class="titlebar"><div><h2>Products</h2><p>Publish and maintain your storefront catalog.</p></div><button class="button" onclick="toggleForm()">+ Add product</button></div><div class="panel" id="productForm" style="display:none"><h2>New product</h2><div class="grid"><div><label>Product name</label><input id="productName" placeholder="Product name"></div><div><label>Price (PHP)</label><input id="productPrice" type="number" min="0" step="0.01" placeholder="0.00"></div><div><label>Category</label><select id="productCategory"><option>Clothing</option><option>Accessories</option><option>Lifestyle</option></select></div><div><label>Product images</label><input id="productPhotos" type="file" accept="image/*" multiple><small>Choose up to 5 images, 500 KB each.</small></div><div class="span2"><label>Video URL (optional)</label><input id="productVideo" type="url" placeholder="https://.../product-video.mp4"></div><div class="span2"><label>Description</label><textarea id="productDescription" placeholder="Tell customers about this product..."></textarea></div></div><button class="button full" onclick="addProduct()">Publish to store</button><p style="font-size:11px">Uploaded product images and videos automatically appear in the catalog slideshow. Images are stored in this browser; use public media URLs for production.</p></div><div class="panel"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div></section>
+<section class="view" id="orders"><div class="titlebar"><div><h2>Orders</h2><p>Every order and the buyer’s delivery details.</p></div></div><div class="panel"><table class="table"><thead><tr><th>Order</th><th>Customer & contact</th><th>Delivery address</th><th>Items</th><th>Status</th></tr></thead><tbody id="orderRows"></tbody></table></div></section>
+<section class="view" id="messages"><div class="titlebar"><div><h2>Customer chat</h2><p>Reply directly to messages sent from the storefront.</p></div></div><div class="chat-grid"><div class="panel" style="margin:0"><b>Inbox</b><p id="inboxInfo">No customer messages yet.</p><div id="conversationList" style="margin-top:14px"></div></div><div class="panel" style="margin:0"><div class="thread" id="thread"></div><div class="reply"><input id="replyText" placeholder="Reply to customer..." onkeydown="if(event.key==='Enter')reply()"><button class="button" onclick="reply()">Send</button></div></div></div></section>
+<section class="view" id="customers"><div class="titlebar"><div><h2>Customers</h2><p>Accounts created in this browser.</p></div></div><div class="panel"><table class="table"><thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Phone</th></tr></thead><tbody id="customerRows"></tbody></table></div></section>
+</main></div></section><div class="notice" id="notice"></div><div class="admin-confirm" id="adminConfirm"><div class="admin-confirm-card" role="dialog" aria-modal="true" aria-labelledby="adminConfirmTitle"><div class="admin-confirm-icon">!</div><h2 id="adminConfirmTitle">Remove this product?</h2><p>This will remove it from your storefront and customer bags.</p><div class="admin-confirm-actions"><button class="button alt" type="button" id="adminConfirmDismiss">Keep product</button><button class="button remove" type="button" id="adminConfirmApprove">Remove product</button></div></div></div><script>
+const adminConfirm=document.getElementById('adminConfirm');let resolveAdminConfirm;function confirmProductDeletion(){adminConfirm.classList.add('open');adminConfirmApprove.focus();return new Promise(resolve=>{resolveAdminConfirm=resolve})}function closeAdminConfirm(approved){adminConfirm.classList.remove('open');if(resolveAdminConfirm){resolveAdminConfirm(approved);resolveAdminConfirm=null}}adminConfirmApprove.onclick=()=>closeAdminConfirm(true);adminConfirmDismiss.onclick=()=>closeAdminConfirm(false);adminConfirm.onclick=event=>{if(event.target===adminConfirm)closeAdminConfirm(false)};document.addEventListener('keydown',event=>{if(event.key==='Escape'&&adminConfirm.classList.contains('open'))closeAdminConfirm(false)});
+const defaults=[{id:1,name:'Field Day Tote',category:'Accessories',price:28,color:'#d8e2c6',art:'#395541',desc:'A sturdy everyday tote in washed canvas, with plenty of room for all the little things.'},{id:2,name:'Cloud Cotton Tee',category:'Clothing',price:34,color:'#edd7cf',art:'#f1ece2',desc:'The tee that earns a permanent spot in your rotation. Soft, breathable and relaxed.'},{id:3,name:'Weekend Cap',category:'Accessories',price:22,color:'#d2d8e7',art:'#304162',desc:'An unstructured cotton cap with a subtle embroidered Dane’s mark.'},{id:4,name:'Ribbed Water Bottle',category:'Lifestyle',price:25,color:'#e9ddb8',art:'#d66c45',desc:'A cheerful stainless steel bottle made to tag along everywhere.'},{id:5,name:'Everyday Overshirt',category:'Clothing',price:62,color:'#ccd9d2',art:'#647c6b',desc:'A layerable shirt-jacket with an easy fit and a crisp finish.'},{id:6,name:'Lucky Key Ring',category:'Accessories',price:14,color:'#f0d5c4',art:'#ef7f4e',desc:'A bright little key ring for keeping the important stuff together.'},{id:7,name:'Sunday Candle',category:'Lifestyle',price:30,color:'#dfd9ed',art:'#796589',desc:'Soft notes of bergamot, cedar and a slow Sunday morning.'},{id:8,name:'Easy Day Socks',category:'Clothing',price:16,color:'#dae9e5',art:'#7db2a8',desc:'A two-pack of supremely comfortable cotton rib socks.'}];let products=JSON.parse(localStorage.getItem('danesProducts')||'null')||defaults;const get=(key)=>JSON.parse(localStorage.getItem(key)||'[]');const money=n=>'₱'+Number(n).toFixed(2);function unlock(){if(code.value!=='danes2026')return note('Incorrect passcode');sessionStorage.setItem('danesAdmin','yes');login.style.display='none';admin.style.display='block';renderAll()}function logout(){sessionStorage.removeItem('danesAdmin');location.reload()}function note(t){notice.textContent=t;notice.classList.add('show');setTimeout(()=>notice.classList.remove('show'),2500)}function showView(id,btn){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('aside button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderAll()}function toggleForm(){productForm.style.display=productForm.style.display==='none'?'block':'none'}function addProduct(){let n=name.value.trim(),p=Number(price.value),d=description.value.trim(),file=photo.files[0];if(!n||!p||!d)return note('Name, price, and description are required');let finish=image=>{products.unshift({id:Date.now(),name:n,category:category.value,price:p,desc:d,color:'#d8e2c6',art:'#395541',image,video:video.value.trim()});localStorage.setItem('danesProducts',JSON.stringify(products));productForm.style.display='none';name.value=price.value=description.value=video.value='';photo.value='';renderAll();note('Product published successfully')};if(file){if(file.size>1500000)return note('Use a photo under 1.5 MB for browser storage');let reader=new FileReader();reader.onload=e=>finish(e.target.result);reader.readAsDataURL(file)}else finish('')}function deleteProduct(id){if(!confirm('Delete this product from the storefront?'))return;products=products.filter(p=>p.id!==id);localStorage.setItem('danesProducts',JSON.stringify(products));localStorage.setItem('danesCart',JSON.stringify(get('danesCart').filter(line=>line.id!==id)));renderAll();note('Product removed')}function productTable(){productRows.innerHTML=products.map(p=>`<tr><td>${p.image?`<img class="thumb" src="${p.image}" alt="">`:`<span class="thumb" style="background:${p.color};display:inline-block"></span>`}<b>${p.name}</b></td><td>${p.category}</td><td>${money(p.price)}</td><td><button class="del" onclick="deleteProduct(${p.id})">Delete</button></td></tr>`).join('')}function setOrderStatus(id,status){let orders=get('danesOrders');let order=orders.find(o=>o.id===id);if(!order)return;order.status=status;localStorage.setItem('danesOrders',JSON.stringify(orders));renderAll();note('Order status updated')}function orderTable(){let orders=get('danesOrders').slice().reverse();let markup=orders.length?orders.map(o=>{let items=o.items.map(i=>i.name||products.find(x=>x.id===i.id)?.name||'Deleted product').map((name,index)=>name+' × '+o.items[index].qty).join('<br>');let contact=o.details.email||JSON.parse(localStorage.getItem('danesUser')||'null')?.email||'—';let phone=o.details.phone||JSON.parse(localStorage.getItem('danesUser')||'null')?.phone||'—';return `<tr><td><b>${o.id}</b><br><small>${new Date(o.date).toLocaleDateString()}</small></td><td>${o.details.name}<br><small>${contact} · ${phone}</small></td><td>${o.details.address}</td><td>${items}</td><td><select onchange="setOrderStatus('${o.id}',this.value)">${['New order','Processing','Shipped','Delivered','Cancelled'].map(status=>`<option ${status===(o.status||'New order')?'selected':''}>${status}</option>`).join('')}</select></td></tr>`}).join(''):'<tr><td colspan="5">No orders have been placed yet.</td></tr>';orderRows.innerHTML=markup;recentOrders.innerHTML=orders.length?orders.slice(0,4).map(o=>`<tr><td>${o.id}</td><td>${o.details.name}</td><td>${o.items.length}</td><td>${o.details.address}</td></tr>`).join(''):'<tr><td colspan="4">No orders yet.</td></tr>'}function messages(){let msgs=get('danesMessages');inboxInfo.textContent=msgs.filter(x=>x.from==='customer').length+' customer message(s)';thread.innerHTML=msgs.length?msgs.map(m=>`<div class="msg ${m.from==='admin'?'admin':''}">${m.text}<small>${m.from==='admin'?'You':m.name||'Customer'} · ${m.time||''}</small></div>`).join(''):'<p>No messages yet.</p>';thread.scrollTop=thread.scrollHeight}function reply(){let t=replyText.value.trim();if(!t)return;let msgs=get('danesMessages');msgs.push({id:Date.now(),from:'admin',text:t,time:new Date().toLocaleString()});localStorage.setItem('danesMessages',JSON.stringify(msgs));replyText.value='';messages();note('Reply sent')}function customers(){let u=JSON.parse(localStorage.getItem('danesUser')||'null');customerRows.innerHTML=u?`<tr><td>${u.name||'—'}</td><td>${u.username||'—'}</td><td>${u.email||'—'}</td><td>${u.phone||'—'}</td></tr>`:'<tr><td colspan="4">No customer account has been created yet.</td></tr>'}function renderAll(){products=JSON.parse(localStorage.getItem('danesProducts')||'null')||defaults;let orders=get('danesOrders'),msgs=get('danesMessages'),revenue=orders.reduce((s,o)=>s+o.items.reduce((a,i)=>a+((i.price??products.find(p=>p.id===i.id)?.price)||0)*i.qty,0),0);metrics.innerHTML=`<div class="metric"><b>${orders.length}</b><span>Total orders</span></div><div class="metric"><b>${products.length}</b><span>Live products</span></div><div class="metric"><b>${money(revenue)}</b><span>Order value</span></div><div class="metric"><b>${msgs.filter(m=>m.from==='customer').length}</b><span>Customer messages</span></div>`;productTable();orderTable();messages();customers()}if(sessionStorage.getItem('danesAdmin')==='yes'){login.style.display='none';admin.style.display='block';renderAll()}
+</script><style>
+  @media(max-width:750px){
+    .top{min-height:64px;height:auto;padding:11px 14px;gap:10px;align-items:center}.top .brand{font-size:21px}.top .brand small{display:none}.top a{margin-right:8px!important;font-size:12px!important}.top .button{padding:9px 10px;font-size:12px}.layout{grid-template-columns:1fr}.layout>aside{position:sticky;top:0;z-index:5;display:flex;gap:4px;overflow-x:auto;padding:8px 10px;border-right:0;border-bottom:1px solid var(--line);background:#f0eee7}.layout>aside button{flex:0 0 auto;width:auto;margin:0;padding:10px 12px;font-size:13px}.content{width:100%;padding:20px 14px}.titlebar{align-items:flex-start;gap:12px;margin-bottom:18px}.titlebar h2{font-size:25px}.titlebar .button{flex:0 0 auto;padding:10px 12px;font-size:12px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:14px}.metric b{font-size:24px}.panel{padding:15px;margin-top:14px;overflow-x:auto}.grid{grid-template-columns:1fr;gap:0}.span2{grid-column:auto}.table{min-width:620px}.chat-grid{grid-template-columns:1fr}.chat-grid .panel{overflow:visible}.modern-chat{grid-template-columns:1fr;min-height:0;border-radius:12px}.modern-inbox{border-right:0;border-bottom:1px solid var(--line);padding:15px;max-height:230px;overflow:auto}.modern-inbox h3{font-size:20px}.modern-contact{padding:10px}.modern-thread-head{padding:14px;flex-wrap:wrap}.modern-thread-head>div[style*="display:flex"]{width:100%;margin-left:48px}.modern-thread-head>div[style*="display:flex"] .button{flex:1}.modern-bubbles{min-height:310px;max-height:48vh;padding:15px}.modern-bubble{max-width:88%}.modern-compose{padding:12px}.modern-compose input{min-width:0}.admin-confirm{padding:14px}.admin-confirm-card{padding:24px 18px}.admin-confirm-actions{flex-direction:column-reverse}.admin-confirm-actions .button{width:100%}
+  }
+  @media(max-width:420px){
+    .content{padding:16px 10px}.top{padding:10px}.top .brand{font-size:19px}.metrics{gap:8px}.metric{padding:12px}.metric b{font-size:22px}.titlebar{flex-direction:column}.titlebar .button{width:100%}.panel{padding:12px}.modern-bubbles{min-height:280px}.modern-thread-head>div[style*="display:flex"]{margin-left:0}.modern-thread-head>div[style*="display:flex"] .button{font-size:11px!important;padding:8px 6px!important}
+  }
+</style><script>
+function addProduct(){
+  const productName=document.getElementById('productName'),productPrice=document.getElementById('productPrice'),productCategory=document.getElementById('productCategory'),productDescription=document.getElementById('productDescription'),productPhotos=document.getElementById('productPhotos'),productVideo=document.getElementById('productVideo');
+  const productNameValue=productName.value.trim(),productPriceValue=Number(productPrice.value),productDescriptionValue=productDescription.value.trim(),files=Array.from(productPhotos.files);
+  if(!productNameValue||!productPriceValue||!productDescriptionValue)return note('Name, price, and description are required');
+  if(files.length>5)return note('Choose no more than 5 images');
+  if(files.some(file=>file.size>500000))return note('Each image must be under 500 KB');
+  Promise.all(files.map(file=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=event=>resolve(event.target.result);reader.onerror=reject;reader.readAsDataURL(file)}))).then(images=>{
+    products.unshift({id:Date.now(),name:productNameValue,category:productCategory.value,price:productPriceValue,desc:productDescriptionValue,color:'#d8e2c6',art:'#395541',image:images[0]||'',images,video:productVideo.value.trim()});
+    localStorage.setItem('danesProducts',JSON.stringify(products));productForm.style.display='none';productName.value=productPrice.value=productDescription.value=productVideo.value='';productPhotos.value='';renderAll();note('Product published successfully');
+  }).catch(()=>note('The selected image could not be read'));
+}
+</script><script>
+let activeConversation='',conversationKeys=[];
+const messageConversation=message=>message.conversationId||`legacy:${message.name||'Guest customer'}`;
+function openConversation(index){activeConversation=conversationKeys[index]||'';messages()}
+function messages(){
+  const allMessages=get('danesMessages'),customerMessages=allMessages.filter(message=>message.from==='customer'),groups=new Map();
+  customerMessages.forEach(message=>{const key=messageConversation(message);if(!groups.has(key))groups.set(key,{name:message.name||'Guest customer',product:message.productName||'',last:message})});
+  conversationKeys=[...groups.keys()].reverse();if(!activeConversation||!groups.has(activeConversation))activeConversation=conversationKeys[0]||'';
+  inboxInfo.textContent=customerMessages.length?`${conversationKeys.length} customer conversation(s)`:'No customer messages yet.';
+  conversationList.innerHTML=conversationKeys.length?conversationKeys.map((key,index)=>{const conversation=groups.get(key);return `<button onclick="openConversation(${index})" style="width:100%;text-align:left;padding:10px;margin:0 0 7px;border:1px solid var(--line);border-radius:4px;background:${key===activeConversation?'#e2efd0':'#fff'};cursor:pointer"><b>${conversation.name}</b>${conversation.product?`<small style="display:block;margin-top:3px">About: ${conversation.product}</small>`:''}</button>`}).join(''):'<p>No customer messages yet.</p>';
+  const threadMessages=allMessages.filter(message=>messageConversation(message)===activeConversation);
+  thread.innerHTML=threadMessages.length?threadMessages.map(message=>`<div class="msg ${message.from==='admin'?'admin':''}">${message.productName?`<b style="display:block;font-size:11px;margin-bottom:4px">Product: ${message.productName}</b>`:''}${message.text}<small>${message.from==='admin'?'You':message.name||'Guest customer'} · ${message.time||''}</small></div>`).join(''):'<p>Select a customer conversation.</p>';
+  thread.scrollTop=thread.scrollHeight;
+}
+function reply(){const text=replyText.value.trim();if(!text)return;if(!activeConversation)return note('Select a customer conversation first');const allMessages=get('danesMessages');allMessages.push({id:Date.now(),from:'admin',text,conversationId:activeConversation,time:new Date().toLocaleString()});localStorage.setItem('danesMessages',JSON.stringify(allMessages));replyText.value='';messages();note('Reply sent')}
+</script><script>
+  // Keep sent replies explicit in the selected admin conversation.
+  const renderConversationMessages = messages;
+  messages = function () {
+    renderConversationMessages();
+    let sentReplies = document.getElementById('adminReplyHistory');
+    if (!sentReplies) {
+      sentReplies = document.createElement('div');
+      sentReplies.id = 'adminReplyHistory';
+      sentReplies.style.cssText = 'margin-top:14px;padding-top:14px;border-top:1px solid var(--line)';
+      document.getElementById('thread').after(sentReplies);
+    }
+    const replies = get('danesMessages').filter(message => message.from === 'admin' && messageConversation(message) === activeConversation);
+    sentReplies.innerHTML = `<b style="font-size:12px">Replies sent (${replies.length})</b>` + (replies.length
+      ? replies.map(message => `<div class="msg admin">${message.text}<small>You · ${message.time || ''}</small></div>`).join('')
+      : '<p style="font-size:12px;margin:8px 0 0">No reply has been sent to this customer yet.</p>');
+  };
+
+  // Render each selected thread as one chronological Messenger-style conversation.
+  window.messages = function () {
+    const allMessages = get('danesMessages');
+    const customerMessages = allMessages.filter(message => message.from === 'customer');
+    const groups = new Map();
+    customerMessages.forEach(message => {
+      const key = messageConversation(message);
+      if (!groups.has(key)) groups.set(key, {name: message.name || 'Guest customer', product: message.productName || ''});
+    });
+    conversationKeys = [...groups.keys()].reverse();
+    if (!activeConversation || !groups.has(activeConversation)) activeConversation = conversationKeys[0] || '';
+    inboxInfo.textContent = customerMessages.length ? `${conversationKeys.length} customer conversation(s)` : 'No customer messages yet.';
+    conversationList.innerHTML = conversationKeys.length ? conversationKeys.map((key, index) => {
+      const conversation = groups.get(key);
+      return `<button onclick="openConversation(${index})" style="width:100%;text-align:left;padding:10px;margin:0 0 7px;border:1px solid var(--line);border-radius:4px;background:${key === activeConversation ? '#e2efd0' : '#fff'};cursor:pointer"><b>${conversation.name}</b>${conversation.product ? `<small style="display:block;margin-top:3px">About: ${conversation.product}</small>` : ''}</button>`;
+    }).join('') : '<p>No customer messages yet.</p>';
+
+    let latestCustomerConversation = '';
+    const threadMessages = allMessages.filter(message => {
+      if (message.from === 'customer') latestCustomerConversation = messageConversation(message);
+      const conversation = message.conversationId || (message.from === 'admin' ? latestCustomerConversation : messageConversation(message));
+      return conversation === activeConversation;
+    });
+    thread.innerHTML = threadMessages.length ? threadMessages.map(message => `<div class="msg ${message.from === 'admin' ? 'admin' : ''}">${message.text}<small>${message.from === 'admin' ? 'You' : message.name || 'Guest customer'} · ${message.time || ''}</small></div>`).join('') : '<p>Select a customer conversation.</p>';
+    thread.scrollTop = thread.scrollHeight;
+    const sentReplies = document.getElementById('adminReplyHistory');
+    if (sentReplies) sentReplies.style.display = 'none';
+  };
+
+  window.reply = function () {
+    const text = replyText.value.trim();
+    if (!text) return;
+    if (!activeConversation) return note('Select a customer conversation first');
+    const allMessages = get('danesMessages');
+    allMessages.push({id: Date.now(), from: 'admin', text, conversationId: activeConversation, time: new Date().toLocaleString()});
+    localStorage.setItem('danesMessages', JSON.stringify(allMessages));
+    replyText.value = '';
+    window.messages();
+    note('Reply sent');
+  };
+
+  // Use one unambiguous handler for the Send button and Enter key.
+  window.sendAdminReply = function () {
+    window.reply();
+  };
+  const adminReplyInput = document.getElementById('replyText');
+  const adminReplyButton = document.querySelector('.reply button');
+  adminReplyButton.onclick = window.sendAdminReply;
+  adminReplyInput.onkeydown = event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      window.sendAdminReply();
+    }
+  };
+
+  // Attach replies created before conversations were introduced to their customer thread.
+  (function migrateLegacyAdminReplies() {
+    const allMessages = get('danesMessages');
+    let currentConversation = '';
+    let changed = false;
+
+    allMessages.forEach(message => {
+      if (message.from === 'customer') {
+        currentConversation = messageConversation(message);
+      } else if (message.from === 'admin' && !message.conversationId && currentConversation) {
+        message.conversationId = currentConversation;
+        changed = true;
+      }
+    });
+
+    if (changed) localStorage.setItem('danesMessages', JSON.stringify(allMessages));
+    if (sessionStorage.getItem('danesAdmin') === 'yes') messages();
+  })();
+</script><script>
+  // Single, explicit Messenger renderer for the admin customer-chat panel.
+  function renderMessengerThread() {
+    const allMessages = get('danesMessages');
+    const inbox = document.getElementById('conversationList');
+    const info = document.getElementById('inboxInfo');
+    const panel = document.getElementById('thread');
+    const customerMessages = allMessages.filter(message => message.from === 'customer');
+    const conversations = new Map();
+
+    customerMessages.forEach(message => {
+      const key = messageConversation(message);
+      if (!conversations.has(key)) conversations.set(key, {name: message.name || 'Guest customer', product: message.productName || ''});
+    });
+    conversationKeys = [...conversations.keys()].reverse();
+    if (!activeConversation || !conversations.has(activeConversation)) activeConversation = conversationKeys[0] || '';
+    info.textContent = conversationKeys.length ? `${conversationKeys.length} customer conversation(s)` : 'No customer messages yet.';
+    inbox.innerHTML = conversationKeys.map((key, index) => {
+      const conversation = conversations.get(key);
+      return `<button type="button" onclick="openMessengerConversation(${index})" style="width:100%;text-align:left;padding:10px;margin:0 0 7px;border:1px solid var(--line);border-radius:4px;background:${key === activeConversation ? '#e2efd0' : '#fff'};cursor:pointer"><b>${conversation.name}</b>${conversation.product ? `<small style="display:block;margin-top:3px">About: ${conversation.product}</small>` : ''}</button>`;
+    }).join('') || '<p>No customer messages yet.</p>';
+
+    let latestConversation = '';
+    const selectedMessages = allMessages.filter(message => {
+      if (message.from === 'customer') latestConversation = messageConversation(message);
+      return (message.conversationId || (message.from === 'admin' ? latestConversation : messageConversation(message))) === activeConversation;
+    });
+    panel.innerHTML = selectedMessages.map(message => `<div class="msg ${message.from === 'admin' ? 'admin' : ''}">${message.text}<small>${message.from === 'admin' ? 'You' : message.name || 'Guest customer'} · ${message.time || ''}</small></div>`).join('') || '<p>Select a customer conversation.</p>';
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  window.openMessengerConversation = index => {
+    activeConversation = conversationKeys[index] || '';
+    renderMessengerThread();
+  };
+  window.reply = () => {
+    const input = document.getElementById('replyText');
+    const text = input.value.trim();
+    if (!text) return;
+    if (!activeConversation) return note('Select a customer conversation first');
+    const allMessages = get('danesMessages');
+    allMessages.push({id: Date.now(), from: 'admin', text, conversationId: activeConversation, time: new Date().toLocaleString()});
+    localStorage.setItem('danesMessages', JSON.stringify(allMessages));
+    input.value = '';
+    renderMessengerThread();
+    note('Reply sent');
+  };
+  document.querySelector('.reply button').onclick = window.reply;
+  document.getElementById('replyText').onkeydown = event => {
+    if (event.key === 'Enter') { event.preventDefault(); window.reply(); }
+  };
+  renderMessengerThread();
+</script><style>
+  .modern-chat{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:570px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 12px 35px rgba(24,32,29,.06)}
+  .modern-inbox{background:#f7f8f3;border-right:1px solid var(--line);padding:20px}.modern-inbox h3{margin:0 0 5px;font:600 22px 'Playfair Display'}.modern-inbox p{font-size:12px;margin:0 0 17px}.modern-contact{width:100%;border:0;border-radius:10px;background:transparent;text-align:left;padding:12px;margin:3px 0;cursor:pointer;font:13px 'DM Sans';color:var(--ink)}.modern-contact:hover,.modern-contact.active{background:#e2efd0}.modern-contact small{display:block;color:var(--muted);margin-top:3px}.modern-thread{display:flex;flex-direction:column;min-width:0}.modern-thread-head{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}.modern-avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font-weight:700}.modern-thread-head strong{display:block}.modern-thread-head small{color:var(--muted)}.modern-bubbles{flex:1;min-height:390px;max-height:390px;overflow:auto;padding:24px;background:linear-gradient(180deg,#fcfcf9,#f4f6ef)}.modern-bubble{max-width:min(78%,500px);padding:11px 13px;border-radius:14px 14px 14px 3px;background:#fff;border:1px solid #e2e5de;margin:8px 0;font-size:13px;line-height:1.45;box-shadow:0 2px 5px #00000008}.modern-bubble.admin{margin-left:auto;border-radius:14px 14px 3px 14px;background:var(--lime);border-color:transparent}.modern-bubble small{display:block;margin-top:5px;font-size:10px;color:#647064}.modern-compose{display:flex;gap:9px;padding:16px 20px;border-top:1px solid var(--line)}.modern-compose input{border-radius:999px;background:#f7f8f3}.modern-compose button{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:0 18px;font-weight:700;cursor:pointer}@media(max-width:750px){.modern-chat{grid-template-columns:1fr;min-height:0}.modern-inbox{border-right:0;border-bottom:1px solid var(--line);max-height:175px;overflow:auto}.modern-bubbles{min-height:300px;max-height:300px}}
+</style><script>
+  // Modern customer inbox: independent of the older dashboard chat handlers.
+  let modernConversation = '';
+  const modernConversationKey = message => message.conversationId || `legacy:${message.name || 'Guest customer'}`;
+  function renderModernCustomerChat() {
+    const view = document.getElementById('messages');
+    if (!view || !view.classList.contains('active')) return;
+    const allMessages = get('danesMessages');
+    const customerMessages = allMessages.filter(message => message.from === 'customer');
+    const conversations = new Map();
+    customerMessages.forEach(message => {
+      const key = modernConversationKey(message);
+      if (!conversations.has(key)) conversations.set(key, {name: message.name || 'Guest customer', product: message.productName || ''});
+    });
+    const keys = [...conversations.keys()].reverse();
+    if (!modernConversation || !conversations.has(modernConversation)) modernConversation = keys[0] || '';
+    let latestCustomerConversation = '';
+    const thread = allMessages.filter(message => {
+      if (message.from === 'customer') latestCustomerConversation = modernConversationKey(message);
+      const key = message.conversationId || (message.from === 'admin' ? latestCustomerConversation : modernConversationKey(message));
+      return key === modernConversation;
+    });
+    const selected = conversations.get(modernConversation);
+    view.innerHTML = `<div class="modern-chat"><aside class="modern-inbox"><h3>Customer chat</h3><p>${keys.length ? `${keys.length} active conversation${keys.length === 1 ? '' : 's'}` : 'No customer messages yet.'}</p>${keys.map(key => { const conversation = conversations.get(key); return `<button class="modern-contact ${key === modernConversation ? 'active' : ''}" onclick="openModernConversation(${JSON.stringify(key)})"><b>${conversation.name}</b>${conversation.product ? `<small>About: ${conversation.product}</small>` : '<small>General question</small>'}</button>`; }).join('')}</aside><section class="modern-thread"><header class="modern-thread-head"><div class="modern-avatar">${selected ? selected.name.slice(0,1).toUpperCase() : '?'}</div><div><strong>${selected ? selected.name : 'Select a conversation'}</strong><small>${selected?.product ? `About ${selected.product}` : 'Customer support conversation'}</small></div></header><div class="modern-bubbles" id="modernBubbles">${thread.length ? thread.map(message => `<div class="modern-bubble ${message.from === 'admin' ? 'admin' : ''}">${message.text}<small>${message.from === 'admin' ? 'You' : message.name || 'Customer'} · ${message.time || ''}</small></div>`).join('') : '<p>No messages in this conversation yet.</p>'}</div><div class="modern-compose"><input id="modernReplyText" placeholder="Write a reply..." onkeydown="if(event.key==='Enter')sendModernReply()"><button type="button" onclick="sendModernReply()">Send</button></div></section></div>`;
+    view.querySelectorAll('.modern-contact').forEach((button, index) => {
+      button.onclick = () => { modernConversation = keys[index]; renderModernCustomerChat(); };
+    });
+    const bubbles = document.getElementById('modernBubbles');
+    if (bubbles) bubbles.scrollTop = bubbles.scrollHeight;
+  }
+  window.openModernConversation = key => { modernConversation = key; renderModernCustomerChat(); };
+  window.sendModernReply = () => {
+    const input = document.getElementById('modernReplyText');
+    const text = input?.value.trim();
+    if (!text) return;
+    if (!modernConversation) return note('Select a customer conversation first');
+    const allMessages = get('danesMessages');
+    allMessages.push({id:Date.now(),from:'admin',text,conversationId:modernConversation,time:new Date().toLocaleString()});
+    localStorage.setItem('danesMessages',JSON.stringify(allMessages));
+    renderModernCustomerChat();
+    note('Reply sent');
+  };
+  document.querySelector('aside button[onclick*="messages"]').addEventListener('click', () => setTimeout(renderModernCustomerChat, 0));
+</script><script>
+  function deleteProduct(id){
+    confirmProductDeletion().then(approved=>{
+      if(!approved)return;
+      products=products.filter(product=>product.id!==id);
+      localStorage.setItem('danesProducts',JSON.stringify(products));
+      localStorage.setItem('danesCart',JSON.stringify(get('danesCart').filter(line=>line.id!==id)));
+      renderAll();
+      note('Product removed');
+    });
+  }
+</script><script>
+  let modernShowArchived=false;
+  const archivedConversationKeys=()=>new Set(JSON.parse(localStorage.getItem('danesArchivedConversations')||'[]'));
+  const saveArchivedConversationKeys=keys=>localStorage.setItem('danesArchivedConversations',JSON.stringify([...keys]));
+  const messagesForConversation=(allMessages,key)=>{
+    let latestCustomerConversation='';
+    return allMessages.filter(message=>{
+      if(message.from==='customer')latestCustomerConversation=modernConversationKey(message);
+      const messageKey=message.conversationId||(message.from==='admin'?latestCustomerConversation:modernConversationKey(message));
+      return messageKey===key;
+    });
+  };
+  const confirmAdminAction=({title,message,approveLabel})=>{
+    adminConfirmTitle.textContent=title;
+    adminConfirm.querySelector('p').textContent=message;
+    adminConfirmApprove.textContent=approveLabel;
+    adminConfirmDismiss.textContent='Keep conversation';
+    adminConfirm.classList.add('open');
+    adminConfirmApprove.focus();
+    return new Promise(resolve=>{resolveAdminConfirm=resolve});
+  };
+  window.archiveModernConversation=()=>{
+    if(!modernConversation)return;
+    const archived=archivedConversationKeys();
+    archived.add(modernConversation);
+    saveArchivedConversationKeys(archived);
+    modernConversation='';
+    renderModernCustomerChat();
+    note('Conversation archived');
+  };
+  window.restoreModernConversation=()=>{
+    if(!modernConversation)return;
+    const archived=archivedConversationKeys();
+    archived.delete(modernConversation);
+    saveArchivedConversationKeys(archived);
+    modernShowArchived=false;
+    renderModernCustomerChat();
+    note('Conversation restored to inbox');
+  };
+  window.deleteModernConversation=()=>{
+    const key=modernConversation;
+    if(!key)return;
+    confirmAdminAction({title:'Delete this conversation?',message:'All messages and replies in this conversation will be permanently removed.',approveLabel:'Delete conversation'}).then(approved=>{
+      if(!approved)return;
+      const allMessages=get('danesMessages'),targetMessages=new Set(messagesForConversation(allMessages,key));
+      localStorage.setItem('danesMessages',JSON.stringify(allMessages.filter(message=>!targetMessages.has(message))));
+      const archived=archivedConversationKeys();
+      archived.delete(key);
+      saveArchivedConversationKeys(archived);
+      modernConversation='';
+      renderModernCustomerChat();
+      note('Conversation deleted');
+    });
+  };
+  window.toggleArchivedConversations=()=>{modernShowArchived=!modernShowArchived;modernConversation='';renderModernCustomerChat()};
+  window.renderModernCustomerChat=function(){
+    const view=document.getElementById('messages');
+    if(!view||!view.classList.contains('active'))return;
+    const allMessages=get('danesMessages'),archived=archivedConversationKeys(),conversations=new Map();
+    allMessages.filter(message=>message.from==='customer').forEach(message=>{
+      const key=modernConversationKey(message);
+      if(!conversations.has(key))conversations.set(key,{name:message.name||'Guest customer',product:message.productName||''});
+    });
+    const keys=[...conversations.keys()].filter(key=>modernShowArchived?archived.has(key):!archived.has(key)).reverse();
+    if(!modernConversation||!conversations.has(modernConversation)||!keys.includes(modernConversation))modernConversation=keys[0]||'';
+    const selected=conversations.get(modernConversation),thread=modernConversation?messagesForConversation(allMessages,modernConversation):[],isArchived=archived.has(modernConversation);
+    view.innerHTML=`<div class="modern-chat"><aside class="modern-inbox"><h3>${modernShowArchived?'Archived chats':'Customer chat'}</h3><p>${keys.length?`${keys.length} ${modernShowArchived?'archived':'active'} conversation${keys.length===1?'':'s'}`:'No conversations here yet.'}</p><button type="button" class="button alt" style="width:100%;font-size:12px;margin-bottom:10px" onclick="toggleArchivedConversations()">${modernShowArchived?'Back to inbox':'View archived'}</button>${keys.map(key=>{const conversation=conversations.get(key);return `<button class="modern-contact ${key===modernConversation?'active':''}" type="button"><b>${conversation.name}</b>${conversation.product?`<small>About: ${conversation.product}</small>`:'<small>General question</small>'}</button>`}).join('')}</aside><section class="modern-thread"><header class="modern-thread-head"><div class="modern-avatar">${selected?selected.name.slice(0,1).toUpperCase():'?'}</div><div style="min-width:0;flex:1"><strong>${selected?selected.name:'Select a conversation'}</strong><small>${selected?.product?`About ${selected.product}`:'Customer support conversation'}</small></div>${selected?`<div style="display:flex;gap:7px"><button type="button" class="button alt" style="padding:8px 10px;font-size:12px" onclick="${isArchived?'restoreModernConversation()':'archiveModernConversation()'}">${isArchived?'Restore':'Archive'}</button><button type="button" class="button" style="padding:8px 10px;font-size:12px;background:var(--orange)" onclick="deleteModernConversation()">Delete</button></div>`:''}</header><div class="modern-bubbles" id="modernBubbles">${thread.length?thread.map(message=>`<div class="modern-bubble ${message.from==='admin'?'admin':''}">${message.text}<small>${message.from==='admin'?'You':message.name||'Customer'} · ${message.time||''}</small></div>`).join(''):'<p>No messages in this conversation yet.</p>'}</div>${selected?`<div class="modern-compose"><input id="modernReplyText" placeholder="Write a reply..." onkeydown="if(event.key==='Enter')sendModernReply()"><button type="button" onclick="sendModernReply()">Send</button></div>`:''}</section></div>`;
+    view.querySelectorAll('.modern-contact').forEach((button,index)=>button.onclick=()=>{modernConversation=keys[index];renderModernCustomerChat()});
+    const bubbles=document.getElementById('modernBubbles');if(bubbles)bubbles.scrollTop=bubbles.scrollHeight;
+  };
+</script><style>
+  @media(max-width:750px){
+    .admin .top{height:auto;min-height:62px;padding:10px 14px}.admin .top .brand{font-size:21px}.admin .top .brand small{display:none}.admin .layout{display:block}.admin .layout>aside{position:sticky;top:0;z-index:10;display:flex;gap:5px;padding:8px 10px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);background:#f0eee7}.admin .layout>aside button{flex:0 0 auto;width:auto;margin:0;padding:10px 12px;white-space:nowrap}.admin .content{max-width:none;padding:18px 14px}.admin .titlebar{gap:12px;align-items:flex-start}.admin .metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.admin .panel{padding:14px;overflow:visible}.admin .grid{grid-template-columns:1fr}.admin .span2{grid-column:auto}.admin .table{min-width:0}.admin .table thead{display:none}.admin .table,.admin .table tbody,.admin .table tr,.admin .table td{display:block;width:100%}.admin .table tr{margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}.admin .table td{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border:0;text-align:right}.admin .table td:before{flex:0 0 42%;text-align:left;color:var(--muted);font:600 10px 'DM Mono';letter-spacing:.06em;text-transform:uppercase}.admin #productRows td:nth-child(1):before{content:'Product'}.admin #productRows td:nth-child(2):before{content:'Category'}.admin #productRows td:nth-child(3):before{content:'Price'}.admin #productRows td:nth-child(4):before{content:'Action'}.admin #orderRows td:nth-child(1):before{content:'Order'}.admin #orderRows td:nth-child(2):before{content:'Customer'}.admin #orderRows td:nth-child(3):before{content:'Delivery'}.admin #orderRows td:nth-child(4):before{content:'Items'}.admin #orderRows td:nth-child(5):before{content:'Status'}.admin #recentOrders td:nth-child(1):before{content:'Order'}.admin #recentOrders td:nth-child(2):before{content:'Customer'}.admin #recentOrders td:nth-child(3):before{content:'Items'}.admin #recentOrders td:nth-child(4):before{content:'Address'}.admin #customerRows td:nth-child(1):before{content:'Name'}.admin #customerRows td:nth-child(2):before{content:'Username'}.admin #customerRows td:nth-child(3):before{content:'Email'}.admin #customerRows td:nth-child(4):before{content:'Phone'}.admin .modern-chat{border-radius:12px}.admin .modern-inbox{max-height:255px;padding:14px}.admin .modern-thread-head{padding:14px;align-items:flex-start;flex-wrap:wrap}.admin .modern-thread-head>div[style*="display:flex"]{width:100%;margin-left:48px}.admin .modern-bubbles{min-height:320px;max-height:52vh;padding:15px}.admin .modern-compose{padding:12px}.admin .modern-compose input{min-width:0;font-size:16px}.admin .modern-compose button{min-width:64px}.admin .modern-contact{padding:11px}.admin .button,.admin .del{min-height:42px}.admin .del{padding:8px 0}.admin .admin-confirm{align-items:flex-end;padding:0}.admin .admin-confirm-card{width:100%;border-radius:14px 14px 0 0;padding:25px 20px}
+  }
+  @media(max-width:440px){
+    .admin .content{padding:14px 10px}.admin .titlebar{flex-direction:column}.admin .titlebar>.button{width:100%}.admin .metric{padding:12px}.admin .metric b{font-size:22px}.admin .table td{font-size:12px}.admin .modern-thread-head>div[style*="display:flex"]{margin-left:0}.admin .modern-thread-head>div[style*="display:flex"] .button{font-size:11px!important;padding:8px 6px!important}.admin .modern-bubbles{min-height:280px;max-height:48vh}
+  }
+</style></body></html>
