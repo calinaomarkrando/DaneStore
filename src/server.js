@@ -3,14 +3,18 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
 import { pool, query } from './db.js';
 import { comparePassword, hashPassword, publicUser, requireAdmin, requireAuth, signToken } from './auth.js';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
 const app = express();
+const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 app.use(helmet());
 app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || true }));
 app.use(express.json({ limit: '100kb' }));
+app.use(express.static(rootDir, { index: 'index.html', dotfiles: 'deny' }));
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true, legacyHeaders: false }));
 
 const page = value => Math.max(1, Number.parseInt(value, 10) || 1);
@@ -55,6 +59,21 @@ app.get('/api/products', async (req, res) => {
   if (category) values.push(category);
   const result = await query(`SELECT p.*, COALESCE(json_agg(json_build_object('id',m.id,'url',m.url,'type',m.media_type,'position',m.position) ORDER BY m.position) FILTER (WHERE m.id IS NOT NULL),'[]') AS media FROM products p LEFT JOIN product_media m ON m.product_id=p.id WHERE p.is_active=true ${categoryClause} GROUP BY p.id ORDER BY p.created_at DESC LIMIT $1 OFFSET $2`, values);
   res.json({ data: result.rows.map(product => ({ ...product, price: product.price_cents / 100 })), page: page(req.query.page), limit: take });
+});
+app.get('/api/products/:id/reviews', async (req, res) => {
+  const result = await query('SELECT r.id,r.body,r.created_at,u.name FROM reviews r JOIN users u ON u.id=r.author_id WHERE r.product_id=$1 ORDER BY r.created_at DESC', [req.params.id]);
+  res.json({ data: result.rows });
+});
+app.post('/api/products/:id/reviews', requireAuth, async (req, res) => {
+  if (!isText(req.body.body, 2000)) return fail(res, 400, 'Review text is required');
+  try {
+    const result = await query('INSERT INTO reviews (product_id,author_id,body) VALUES ($1,$2,$3) RETURNING id,body,created_at', [req.params.id, req.user.id, req.body.body.trim()]);
+    res.status(201).json({ review: { ...result.rows[0], name: req.user.name } });
+  } catch (error) {
+    if (error.code === '23503') return fail(res, 404, 'Product not found');
+    if (error.code === '23505') return fail(res, 409, 'You have already reviewed this product');
+    throw error;
+  }
 });
 app.post('/api/products', requireAuth, requireAdmin, async (req, res) => {
   const { name, category, price, description, color = '#d8e2c6', artColor = '#395541', media = [] } = req.body;

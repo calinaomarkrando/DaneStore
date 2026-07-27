@@ -39,7 +39,7 @@
   <script>
     const defaultProducts=[{id:1,name:'Field Day Tote',category:'Accessories',price:28,color:'#d8e2c6',art:'#395541',desc:'A sturdy everyday tote in washed canvas, with plenty of room for all the little things.'},{id:2,name:'Cloud Cotton Tee',category:'Clothing',price:34,color:'#edd7cf',art:'#f1ece2',desc:'The tee that earns a permanent spot in your rotation. Soft, breathable and relaxed.'},{id:3,name:'Weekend Cap',category:'Accessories',price:22,color:'#d2d8e7',art:'#304162',desc:'An unstructured cotton cap with a subtle embroidered Dane’s mark.'},{id:4,name:'Ribbed Water Bottle',category:'Lifestyle',price:25,color:'#e9ddb8',art:'#d66c45',desc:'A cheerful stainless steel bottle made to tag along everywhere.'},{id:5,name:'Everyday Overshirt',category:'Clothing',price:62,color:'#ccd9d2',art:'#647c6b',desc:'A layerable shirt-jacket with an easy fit and a crisp finish.'},{id:6,name:'Lucky Key Ring',category:'Accessories',price:14,color:'#f0d5c4',art:'#ef7f4e',desc:'A bright little key ring for keeping the important stuff together.'},{id:7,name:'Sunday Candle',category:'Lifestyle',price:30,color:'#dfd9ed',art:'#796589',desc:'Soft notes of bergamot, cedar and a slow Sunday morning.'},{id:8,name:'Easy Day Socks',category:'Clothing',price:16,color:'#dae9e5',art:'#7db2a8',desc:'A two-pack of supremely comfortable cotton rib socks.'}];
     let products=JSON.parse(localStorage.getItem('danesProducts')||'null')||defaultProducts;
-    let cart=JSON.parse(localStorage.getItem('danesCart')||'[]'), user=JSON.parse(localStorage.getItem('danesUser')||'null'), activeProduct=null;
+    let cart=JSON.parse(localStorage.getItem('danesCart')||'[]'), user=null, activeProduct=null;
     const save=()=>localStorage.setItem('danesCart',JSON.stringify(cart)); const money=n=>'₱'+n.toFixed(2);
     function renderProducts(list=products){document.getElementById('products').innerHTML=list.map((p,i)=>`<article class="product" onclick="showProduct(${p.id})"><div class="product-image p${i%4+1}" style="background:${p.color}"><span class="badge">${p.category}</span>${p.image?`<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`:`<div class="art" style="background:${p.art}"></div>`}<button class="quick" onclick="event.stopPropagation();addCart(${p.id})">Add to bag — ${money(p.price)}</button></div><div class="product-info"><div><h3>${p.name}</h3><span>${money(p.price)}</span></div><p>${p.category}</p></div></article>`).join('')}
     function filterProducts(cat){renderProducts(cat==='All'?products:products.filter(x=>x.category===cat));document.querySelector('#shop').scrollIntoView({behavior:'smooth'})}
@@ -268,5 +268,111 @@
       authModal.classList.add('open');
       toast('Please sign in or create an account to continue.');
     }, true);
+  </script>
+  <script>
+    // Persistent-store integration. The API is served from the same origin as this page.
+    const apiRequest = async (path, options = {}) => {
+      const token = localStorage.getItem('danesToken');
+      const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const response = await fetch(`/api${path}`, { ...options, headers });
+      const data = response.status === 204 ? null : await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) logoutCustomer();
+        throw new Error(data.error || 'Something went wrong. Please try again.');
+      }
+      return data;
+    };
+
+    const setSession = session => {
+      user = session.user;
+      localStorage.setItem('danesToken', session.token);
+      document.getElementById('accountBtn').textContent = `Hi, ${user.name.split(' ')[0]}`;
+      closeModal('authModal');
+      toast('You’re signed in!');
+    };
+
+    async function signUp() {
+      const payload = { name: newName.value.trim(), email: newEmail.value.trim(), phone: newPhone.value.trim(), username: newUser.value.trim(), password: newPass.value };
+      if (!payload.name || !payload.username || !payload.password || (!payload.email && !payload.phone)) return toast('Please complete the required details');
+      if (payload.password.length < 8) return toast('Password must be at least 8 characters');
+      try { setSession(await apiRequest('/auth/register', { method: 'POST', body: JSON.stringify(payload) })); }
+      catch (error) { toast(error.message); }
+    }
+
+    async function signIn() {
+      if (!loginId.value || !loginPass.value) return toast('Enter your sign-in details');
+      try { setSession(await apiRequest('/auth/login', { method: 'POST', body: JSON.stringify({ identifier: loginId.value.trim(), password: loginPass.value }) })); }
+      catch (error) { toast(error.message); }
+    }
+
+    function demoGoogle() { toast('Google sign-in is not configured yet. Please create an account or sign in.'); }
+    function logoutCustomer() {
+      user = null;
+      localStorage.removeItem('danesToken');
+      document.getElementById('accountBtn').textContent = 'Sign in';
+      closeModal('accountModal');
+      toast('You have been logged out');
+    }
+
+    async function loadCatalog() {
+      try {
+        const result = await apiRequest('/products?limit=100');
+        if (!result.data.length) return toast('Catalog is empty. Run npm run seed to add your products.');
+        products = result.data.map(product => ({ ...product, art: product.art_color, desc: product.description, images: (product.media || []).filter(item => item.type === 'image').map(item => item.url), video: (product.media || []).find(item => item.type === 'video')?.url }));
+        cart = cart.filter(line => products.some(product => product.id === line.id));
+        save(); renderProducts(); updateCart(); renderCatalogSlider();
+      } catch (error) { toast('Store API is unavailable. Start the server to shop.'); }
+    }
+
+    async function placeOrder() {
+      if (!shipName.value || !shipPhone.value || !shipAddress.value || !shipCity.value) return toast('Please complete your delivery details');
+      try {
+        const result = await apiRequest('/orders', { method: 'POST', body: JSON.stringify({
+          items: cart.map(line => ({ productId: line.id, quantity: line.qty })),
+          shipping: { name: shipName.value.trim(), email: shipEmail.value.trim(), phone: shipPhone.value.trim(), address: `${shipAddress.value.trim()}, ${shipCity.value.trim()} ${shipZip.value.trim()}`.trim() },
+          paymentMethod: 'Cash on delivery'
+        }) });
+        cart = []; save(); updateCart(); closeModal('checkoutModal'); toast(`Order #${result.order.order_number} placed!`);
+      } catch (error) { toast(error.message); }
+    }
+
+    async function addReview() {
+      const body = document.getElementById('reviewText').value.trim();
+      if (!body) return toast('Write a review first');
+      try { await apiRequest(`/products/${activeProduct.id}/reviews`, { method: 'POST', body: JSON.stringify({ body }) }); showProduct(activeProduct.id); toast('Thank you for your review!'); }
+      catch (error) { toast(error.message); }
+    }
+
+    const openProductDetails = showProduct;
+    showProduct = function (id) {
+      openProductDetails(id);
+      apiRequest(`/products/${id}/reviews`).then(result => {
+        const reviews = document.getElementById('reviews');
+        if (!reviews) return;
+        reviews.innerHTML = result.data.length ? result.data.map(review => `<div class="review"><span class="stars">★★★★★</span><b> ${review.name}</b><br>${review.body}</div>`).join('') : '<p style="font-size:13px;color:var(--muted)">No reviews yet. Be the first to share!</p>';
+      }).catch(() => {});
+    };
+
+    async function renderCustomerOrders() {
+      const panel = document.getElementById('ordersPanel');
+      if (!user) return;
+      try {
+        const result = await apiRequest('/orders?limit=50');
+        panel.innerHTML = `<h3>My orders</h3><p class="orders-panel-intro">Track your recent purchases and delivery progress.</p>${result.data.length ? result.data.map(order => `<article class="order-card"><div class="order-card-head"><div><strong>Order #${order.order_number}</strong><div class="order-date">${new Date(order.created_at).toLocaleDateString()}</div></div><span class="order-status ${order.status}">${order.status}</span></div><div class="order-items">${order.items.map(item => `<div>${item.name} × ${item.quantity} <span style="float:right">${money(item.price * item.quantity)}</span></div>`).join('')}</div><div class="order-total"><span>Total</span><span>${money(order.subtotal)}</span></div></article>`).join('') : '<p class="orders-panel-intro">Your orders will appear here after checkout.</p>'}`;
+      } catch (error) { panel.innerHTML = `<p class="orders-panel-intro">${error.message}</p>`; }
+    }
+
+    (async () => {
+      document.getElementById('payment').innerHTML = '<option>Cash on delivery</option>';
+      const token = localStorage.getItem('danesToken');
+      if (token) {
+        try {
+          user = (await apiRequest('/me')).user;
+          document.getElementById('accountBtn').textContent = `Hi, ${user.name.split(' ')[0]}`;
+        } catch { localStorage.removeItem('danesToken'); }
+      }
+      await loadCatalog();
+    })();
   </script>
 </body></html>
