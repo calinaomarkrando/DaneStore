@@ -271,11 +271,12 @@
   </script>
   <script>
     // Persistent-store integration. The API is served from the same origin as this page.
+    const storeApiOrigin = window.STORE_API_URL || (location.hostname === 'localhost' ? '' : 'https://danestore-api.onrender.com');
     const apiRequest = async (path, options = {}) => {
       const token = localStorage.getItem('danesToken');
       const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const response = await fetch(`/api${path}`, { ...options, headers });
+      const response = await fetch(`${storeApiOrigin}/api${path}`, { ...options, headers });
       const data = response.status === 204 ? null : await response.json().catch(() => ({}));
       if (!response.ok) {
         if (response.status === 401) logoutCustomer();

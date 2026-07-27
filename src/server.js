@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { pool, query } from './db.js';
 import { comparePassword, hashPassword, publicUser, requireAdmin, requireAuth, signToken } from './auth.js';
+import { ensureCatalog } from './catalog.js';
 
 if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
 const app = express();
@@ -170,4 +171,5 @@ app.delete('/api/conversations/:id', requireAuth, requireAdmin, async (req, res)
   res.status(204).end();
 });
 app.use((error, _req, res, _next) => { console.error(error); res.status(500).json({ error: 'Internal server error' }); });
+await ensureCatalog();
 app.listen(process.env.PORT || 3000, () => console.log(`API listening on port ${process.env.PORT || 3000}`));
