@@ -20,7 +20,7 @@
 </head>
 <body class="home">
   <div class="promo">FREE SHIPPING ON ORDERS OVER ₱75 <b>·</b> EASY 14-DAY RETURNS</div>
-  <nav><div class="logo">Dane's <span>Store.</span></div><div class="navlinks"><a href="shop.html">Shop</a><a href="#categories">Collections</a><a href="#story">Our story</a></div><button class="mobile-signin" type="button" data-auth-open>Sign in</button><div class="navactions"><button class="navbtn pill auth-trigger" type="button" data-auth-open id="accountBtn">Sign in</button><button class="navbtn pill cart-btn" onclick="openCart()">Bag <i class="count" id="cartCount">0</i></button></div></nav>
+  <nav><div class="logo">Dane's <span>Store.</span></div><div class="navlinks"><a href="shop.html">Shop</a><a href="#categories">Collections</a><a href="#story">Our story</a></div><a class="mobile-signin" href="#authModal" data-auth-open>Sign in</a><div class="navactions"><a class="navbtn pill auth-trigger" href="#authModal" data-auth-open id="accountBtn">Sign in</a><button class="navbtn pill cart-btn" onclick="openCart()">Bag <i class="count" id="cartCount">0</i></button></div></nav>
   <main>
     <section class="hero"><section class="catalog-slider" id="catalogSlider" aria-label="Featured catalog media"></section><div><div class="eyebrow">Carefully picked for everyday living</div><h1>Little things.<br><em>Big mood.</em></h1><p>Clothes, accessories, and practical finds that bring more character to your everyday.</p><button class="cta" onclick="location.href='shop.html'">Shop the edit →</button></div><div class="hero-art"><div class="blob"></div><div class="product-card"></div><div class="float-tag">DANE'S<br>SUMMER<br>EDIT ’26</div></div></section>
     <section class="section" id="categories"><div class="section-head"><div><div class="eyebrow">Browse by mood</div><h2>Find your thing.</h2></div><button class="cta" onclick="location.href='shop.html'" style="padding:12px 18px">View all products →</button></div><div class="categories"><div class="category cat1" onclick="location.href='shop.html?category=Accessories'"><h3>Accessories</h3><p>Small details, major impact →</p><div class="shape"></div></div><div class="category cat2" onclick="location.href='shop.html?category=Clothing'"><h3>Clothing</h3><p>Easy pieces you’ll live in →</p><div class="shape"></div></div><div class="category cat3" onclick="location.href='shop.html?category=Lifestyle'"><h3>Lifestyle</h3><p>Useful things, beautifully done →</p><div class="shape"></div></div></div></section>
@@ -247,6 +247,7 @@
   </script>
   <style>
     /* Keep a clear sign-in entry point in the compact mobile navigation. */
+    .modal:target{display:flex}
     .mobile-signin{display:none}
     @media(max-width:760px){
       .mobile-signin{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 12px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:#fff;font:600 12px 'DM Sans';white-space:nowrap;cursor:pointer}
