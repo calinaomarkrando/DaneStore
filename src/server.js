@@ -88,6 +88,11 @@ app.post('/api/products', requireAuth, requireAdmin, async (req, res) => {
     res.status(201).json({ product: { ...result.rows[0], price: result.rows[0].price_cents / 100 } });
   } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
 });
+app.delete('/api/products/:id', requireAuth, requireAdmin, async (req, res) => {
+  const result = await query('DELETE FROM products WHERE id=$1 RETURNING id', [req.params.id]);
+  if (!result.rowCount) return fail(res, 404, 'Product not found');
+  res.status(204).end();
+});
 
 app.post('/api/orders', requireAuth, async (req, res) => {
   const { items, shipping, paymentMethod } = req.body;
