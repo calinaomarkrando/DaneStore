@@ -270,8 +270,13 @@
     }, true);
   </script>
   <script>
-    // Persistent-store integration. The API is served from the same origin as this page.
-    const storeApiOrigin = window.STORE_API_URL || (location.hostname === 'localhost' ? '' : 'https://danestore-api.onrender.com');
+    // The old hosted endpoint is unavailable. Online deployments use their own
+    // origin by default; a separate API can be set with window.STORE_API_URL.
+    const localHost = /^(localhost|127(?:\.\d{1,3}){3}|::1|\d{1,3}(?:\.\d{1,3}){3})$/.test(location.hostname);
+    const localApiOrigin = location.protocol === 'file:'
+      ? 'http://localhost:3000'
+      : `${location.protocol}//${location.hostname}:3000`;
+    const storeApiOrigin = window.STORE_API_URL?.trim().replace(/\/+$/, '') || (localHost ? (location.port === '3000' ? '' : localApiOrigin) : '');
     const apiRequest = async (path, options = {}) => {
       const token = localStorage.getItem('danesToken');
       const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };

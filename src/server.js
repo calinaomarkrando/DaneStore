@@ -13,7 +13,19 @@ if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
 const app = express();
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || true }));
+const allowedOrigins = new Set((process.env.CORS_ORIGIN || '').split(',').map(origin => origin.trim()).filter(Boolean));
+const isLocalOrigin = origin => {
+  try {
+    const host = new URL(origin).hostname;
+    return host === 'localhost' || host === '::1' || /^127(?:\.\d{1,3}){3}$/.test(host) || /^192\.168(?:\.\d{1,3}){2}$/.test(host) || /^10(?:\.\d{1,3}){3}$/.test(host);
+  } catch { return false; }
+};
+app.use(cors({ origin(origin, callback) {
+  // Same-origin and direct-file requests have no Origin header. Local previews
+  // are allowed in development so sign-in works from common static servers.
+  if (!origin || allowedOrigins.has(origin) || (process.env.NODE_ENV !== 'production' && isLocalOrigin(origin))) return callback(null, true);
+  return callback(new Error('Origin is not allowed by CORS'));
+} }));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.static(rootDir, { index: 'index.html', dotfiles: 'deny' }));
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true, legacyHeaders: false }));

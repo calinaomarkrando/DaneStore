@@ -327,7 +327,11 @@ function reply(){const text=replyText.value.trim();if(!text)return;if(!activeCon
 </style>
 <script>
   // Production admin data access. All writes require a real API admin token.
-  const adminApiOrigin = 'https://danestore-api.onrender.com';
+  // Same-origin is the online default. Set STORE_API_URL only when the API is
+  // hosted separately.
+  const adminLocalHost = /^(localhost|127(?:\.\d{1,3}){3}|::1|\d{1,3}(?:\.\d{1,3}){3})$/.test(location.hostname);
+  const adminLocalApi = location.protocol === 'file:' ? 'http://localhost:3000' : `${location.protocol}//${location.hostname}:3000`;
+  const adminApiOrigin = window.STORE_API_URL?.trim().replace(/\/+$/, '') || (adminLocalHost ? (location.port === '3000' ? '' : adminLocalApi) : '');
   const adminRequest = async (path, options = {}) => {
     const token = sessionStorage.getItem('danesAdminToken');
     const headers = { ...(options.body ? {'Content-Type':'application/json'} : {}), ...(options.headers || {}) };
