@@ -271,7 +271,10 @@
     const localApiOrigin = location.protocol === 'file:'
       ? 'http://localhost:3000'
       : `${location.protocol}//${location.hostname}:3000`;
-    const storeApiOrigin = window.STORE_API_URL?.trim().replace(/\/+$/, '') || (localHost ? (location.port === '3000' ? '' : localApiOrigin) : '');
+    // Production storefront is hosted on Cloudflare Pages while the API runs on
+    // Render. A host page may still override this before the scripts load.
+    const productionApiOrigin = 'https://danestore-api.onrender.com';
+    const storeApiOrigin = window.STORE_API_URL?.trim().replace(/\/+$/, '') || (localHost ? (location.port === '3000' ? '' : localApiOrigin) : productionApiOrigin);
     const apiRequest = async (path, options = {}) => {
       const token = localStorage.getItem('danesToken');
       const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
