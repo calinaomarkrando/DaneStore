@@ -399,8 +399,8 @@
         try {
           user = (await apiRequest('/me')).user;
           document.getElementById('accountBtn').textContent = `Hi, ${user.name.split(' ')[0]}`;
-        } catch { localStorage.removeItem('danesToken'); }
-      }
+        } catch { user = null; localStorage.removeItem('danesToken'); }
+      } else user = null;
       await loadCatalog();
     })();
   </script>
