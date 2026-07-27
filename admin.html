@@ -360,10 +360,17 @@ function reply(){const text=replyText.value.trim();if(!text)return;if(!activeCon
   };
   logout = function() { sessionStorage.removeItem('danesAdminToken'); sessionStorage.removeItem('danesAdmin'); location.reload(); };
   addProduct = async function() {
-    const nameValue=productName.value.trim(), priceValue=Number(productPrice.value), descriptionValue=productDescription.value.trim();
+    const nameValue=productName.value.trim(), priceValue=Number(productPrice.value), descriptionValue=productDescription.value.trim(), files=Array.from(productPhotos.files);
     if (!nameValue || !priceValue || !descriptionValue) return note('Name, price, and description are required');
+    if (files.length > 5) return note('Choose no more than 5 images');
+    if (files.some(file => file.size > 500000)) return note('Each image must be under 500 KB');
     try {
-      await adminRequest('/products', {method:'POST', body:JSON.stringify({name:nameValue,category:productCategory.value,price:priceValue,description:descriptionValue,color:'#d8e2c6',artColor:'#395541',media:[]})});
+      const images = await Promise.all(files.map(file => new Promise((resolve, reject) => {
+        const reader = new FileReader(); reader.onload = event => resolve(event.target.result); reader.onerror = reject; reader.readAsDataURL(file);
+      })));
+      const media = images.map(url => ({ type:'image', url }));
+      if (productVideo.value.trim()) media.push({ type:'video', url:productVideo.value.trim() });
+      await adminRequest('/products', {method:'POST', body:JSON.stringify({name:nameValue,category:productCategory.value,price:priceValue,description:descriptionValue,color:'#d8e2c6',artColor:'#395541',media})});
       productForm.style.display='none'; productName.value=productPrice.value=productDescription.value=productVideo.value=''; productPhotos.value=''; await renderAll(); note('Product published to the live catalog');
     } catch (error) { note(error.message); }
   };

@@ -26,7 +26,7 @@ app.use(cors({ origin(origin, callback) {
   if (!origin || allowedOrigins.has(origin) || (process.env.NODE_ENV !== 'production' && isLocalOrigin(origin))) return callback(null, true);
   return callback(new Error('Origin is not allowed by CORS'));
 } }));
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: '4mb' }));
 app.use(express.static(rootDir, { index: 'index.html', dotfiles: 'deny' }));
 // The storefront switches views in index.html, but preserve this legacy URL so
 // shared links and browser history never receive an Express 404.
@@ -37,6 +37,7 @@ const page = value => Math.max(1, Number.parseInt(value, 10) || 1);
 const limit = value => Math.min(100, Math.max(1, Number.parseInt(value, 10) || 20));
 const fail = (res, status, error) => res.status(status).json({ error });
 const isText = (value, max = 5000) => typeof value === 'string' && value.trim().length > 0 && value.trim().length <= max;
+const isProductMediaUrl = value => isText(value, 700_000) && (/^https:\/\//i.test(value) || /^data:image\/(?:png|jpe?g|webp|gif);base64,/i.test(value));
 const orderRow = row => ({ ...row, subtotal: row.subtotal_cents / 100, items: row.items || [] });
 
 app.get('/health', async (_req, res) => {
@@ -107,7 +108,11 @@ app.post('/api/products', requireAuth, requireAdmin, async (req, res) => {
   try {
     await client.query('BEGIN');
     const result = await client.query('INSERT INTO products (name,category,price_cents,description,color,art_color) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *', [name.trim(), category, Math.round(price * 100), description.trim(), color, artColor]);
-    for (const [position, item] of media.slice(0, 10).entries()) if (isText(item.url, 2048) && ['image', 'video'].includes(item.type)) await client.query('INSERT INTO product_media (product_id,url,media_type,position) VALUES ($1,$2,$3,$4)', [result.rows[0].id, item.url, item.type, position]);
+    for (const [position, item] of media.slice(0, 10).entries()) {
+      const validImage = item.type === 'image' && isProductMediaUrl(item.url);
+      const validVideo = item.type === 'video' && isText(item.url, 2048) && /^https:\/\//i.test(item.url);
+      if (validImage || validVideo) await client.query('INSERT INTO product_media (product_id,url,media_type,position) VALUES ($1,$2,$3,$4)', [result.rows[0].id, item.url, item.type, position]);
+    }
     await client.query('COMMIT');
     res.status(201).json({ product: { ...result.rows[0], price: result.rows[0].price_cents / 100 } });
   } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
