@@ -28,6 +28,9 @@ app.use(cors({ origin(origin, callback) {
 } }));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.static(rootDir, { index: 'index.html', dotfiles: 'deny' }));
+// The storefront switches views in index.html, but preserve this legacy URL so
+// shared links and browser history never receive an Express 404.
+app.get('/shop.html', (_req, res) => res.sendFile(resolve(rootDir, 'index.html')));
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60_000, limit: 20, standardHeaders: true, legacyHeaders: false }));
 
 const page = value => Math.max(1, Number.parseInt(value, 10) || 1);

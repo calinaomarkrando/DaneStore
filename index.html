@@ -255,21 +255,6 @@
     }
   </style>
   <script>
-    // New visitors must authenticate before using any storefront control or link.
-    // Auth-modal controls are deliberately exempt so they can sign in or create an account.
-    document.addEventListener('click', event => {
-      if (user) return;
-      const authModal = document.getElementById('authModal');
-      if (authModal && authModal.contains(event.target)) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      showLogin();
-      authModal.classList.add('open');
-      toast('Please sign in or create an account to continue.');
-    }, true);
-  </script>
-  <script>
     // The old hosted endpoint is unavailable. Online deployments use their own
     // origin by default; a separate API can be set with window.STORE_API_URL.
     const localHost = /^(localhost|127(?:\.\d{1,3}){3}|::1|\d{1,3}(?:\.\d{1,3}){3})$/.test(location.hostname);
