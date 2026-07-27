@@ -51,17 +51,23 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(201).json({ token: signToken(user), user: publicUser(user) });
   } catch (error) {
     if (error.code === '23505') return fail(res, 409, 'Email, phone, or username is already in use');
-    throw error;
+    console.error('Account registration failed:', error);
+    return fail(res, 500, 'Unable to create the account. Please try again.');
   }
 });
 
 app.post('/api/auth/login', async (req, res) => {
   const { identifier, password } = req.body;
   if (!isText(identifier, 254) || !isText(password, 128)) return fail(res, 400, 'Identifier and password are required');
-  const result = await query('SELECT * FROM users WHERE email=$1 OR phone=$1 OR username=$1 LIMIT 1', [identifier.trim()]);
-  const user = result.rows[0];
-  if (!user || !(await comparePassword(password, user.password_hash))) return fail(res, 401, 'Invalid sign-in details');
-  res.json({ token: signToken(user), user: publicUser(user) });
+  try {
+    const result = await query('SELECT * FROM users WHERE email=$1 OR phone=$1 OR username=$1 LIMIT 1', [identifier.trim()]);
+    const user = result.rows[0];
+    if (!user || !(await comparePassword(password, user.password_hash))) return fail(res, 401, 'Invalid sign-in details');
+    res.json({ token: signToken(user), user: publicUser(user) });
+  } catch (error) {
+    console.error('Account sign-in failed:', error);
+    return fail(res, 500, 'Unable to sign in. Please try again.');
+  }
 });
 app.get('/api/me', requireAuth, (req, res) => res.json({ user: publicUser(req.user) }));
 
